@@ -19,13 +19,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('v1')->group(function () {
-    //USSD ENDPOINT
-    //Route::post('ussd', [App\Http\Controllers\Api\USSDController::class,'run']);
-    //Test sending SMS
+    //SMS Routes
     Route::resource('/sms', App\Http\Controllers\Api\SMSController::class);
+
+    //Customer Routes
+    Route::put('/customers/reset-pin', [App\Http\Controllers\Api\CustomerController::class, 'resetPin']);
     Route::put('/customers/update-status', [App\Http\Controllers\Api\CustomerController::class,'updateStatus']);
     Route::resource('/customers', App\Http\Controllers\Api\CustomerController::class);
 
+    //Product Routes
     Route::resource('/products', App\Http\Controllers\Api\ProductController::class);
 
 });

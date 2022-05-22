@@ -6,8 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Api\SMSController;
-use App\Http\Controllers\Services\ActivityLoggerService;
-use Illuminate\Support\Facades\Auth;
+
 
 class CustomerService extends Controller
 {

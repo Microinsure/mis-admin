@@ -7,7 +7,9 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Services\CustomerService;
 use App\Http\Controllers\Services\ActivityLoggerService;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Api\SMSController;
 
 class CustomerController extends Controller
 {
@@ -56,7 +58,7 @@ class CustomerController extends Controller
                 $description = "View customers list!";
                 ActivityLoggerService::LogUserAction($user_id, 'READ', $description);
             }catch(\Exception $err){
-                
+
             }
 
             return response()->json([
@@ -119,9 +121,11 @@ class CustomerController extends Controller
                 $customer->save();
 
                 // Log user activity
-                $user_id = Auth::user()->id;
-                $description = 'Update Customer Status for '.$customer->customer_ref." to ".$customer->status;
-                ActivityLoggerService::LogUserAction($user_id, 'UPDATE', $description);
+                if($request->has($request->user_id) && !empty($request->user_id)){
+                    $description = "Update customer status to ".strtoupper($request->status).
+                    " for customer_ref ".$request->customer_ref;
+                    ActivityLoggerService::LogUserAction($request->user_id, 'UPDATE', $description);
+                }
 
                 return response()->json([
                     'status' => 'success',
@@ -145,6 +149,48 @@ class CustomerController extends Controller
     }
 
 
+    public function resetPin(Request $request)
+    {
+        if($request->has('customer_ref') && !empty($request->customer_ref)){
+            $customer = Customer::where('customer_ref','=',$request->customer_ref)->first();
+            if($customer){
+                $newPin = rand(1001,9999);
+                while(true){
+                    if(Hash::make($newPin) != $customer->pin){
+                        $customer->pin = Hash::make($newPin);
+                        $customer->save();
+                        break;
+                    }
+                    $newPin = rand(1001,9999);
+                }
+
+               if($request->has($request->user_id) && !empty($request->user_id)){
+                     // Log user activity
+                    $description = 'Reset Password for '.$customer->customer_ref;
+                    ActivityLoggerService::LogUserAction($request->user_id, 'UPDATE', $description);
+                }
+
+                $messageBody = "Your pin has been reset. Please use ".$newPin." to login to your account.";
+                SMSController::sendSMS($customer->msisdn, $messageBody);
+
+                return response()->json([
+                    'status' => 'success',
+                    'message'=>'Customer password reset successfully!'
+                ]);
+
+               }else{
+                    return response()->json([
+                        'status' => 'error',
+                        'message'=>'Customer not found!'
+                    ]);
+                }
+        }else{
+            return response()->json([
+                'status' => 'error',
+                'message'=>'Customer not found!'
+            ]);
+        }
+    }
 
     /**
      * Show the form for editing the specified resource.
@@ -166,7 +212,52 @@ class CustomerController extends Controller
      */
     public function update(Request $request, Customer $customer)
     {
-        //
+        //Update customer fields if present in request
+        try{
+            if($customer){
+                    if($request->has('msisdn') && !empty($request->msisdn)){
+                        $customer->msisdn = $request->msisdn;
+                    }
+                    if($request->has('email') && !empty($request->email)){
+                        $customer->email = $request->email;
+                    }
+                    if($request->has('firstname') && !empty($request->firstname)){
+                        $customer->firstname = $request->firstname;
+                    }
+                    if($request->has('middlename') && !empty($request->middlename)){
+                        $customer->middlename = $request->middlename;
+                    }
+                    if($request->has('lastname') && !empty($request->lastname)){
+                        $customer->lastname = $request->lastname;
+                    }
+                    if($request->has('gender') && !empty($request->gender)){
+                        $customer->gender = strtoupper($request->gender);
+                    }
+
+                    if($request->has('address') && !empty($request->address)){
+                        $customer->address = $request->address;
+                    }
+
+                    //Save Changes
+                    $customer->save();
+
+                    // Log user activity
+                    if($request->has($request->user_id) && !empty($request->user_id)){
+                        $description = 'Update Customer Details for '.$customer->customer_ref;
+                        ActivityLoggerService::LogUserAction($request->user_id, 'UPDATE', $description);
+                    }
+            }else{
+                return response()->json([
+                    'status' => 'error',
+                    'message'=>'Customer not found!'
+                ]);
+            }
+        }catch(\Exception $err){
+            return response()->json([
+                'status' => 'error',
+                'message'=>$err->getMessage()
+            ]);
+        }
     }
 
     /**
