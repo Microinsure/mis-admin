@@ -10,7 +10,7 @@ class Customer extends Model
     use HasFactory;
 
     protected $fillable = [
-        'status'
+        'status','firstname','lastname','middlename','gender','email','msisdn','address'
     ];
 
     //Generate 10 characher customer_ref and check if already exist

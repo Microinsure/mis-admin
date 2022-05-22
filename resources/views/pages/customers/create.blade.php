@@ -108,6 +108,7 @@
     //Create user registration function
 
     let CreateUsers = async(data)=>{
+        data.user_id = '{{Auth::user()->id}}'
         try{
             $('#newCustomerForm').addClass('loading')
             let response = await fetch(`${BASE_URL}/api/v1/customers`,{

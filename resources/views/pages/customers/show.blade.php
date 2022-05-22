@@ -91,7 +91,7 @@
 <!-- Update Customer Details Modal Start -->
 <div class="modal fade" id="updateCustomerDetailsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-      <form id="updateCustomerDetailsForm" class="modal-content">
+      <form id="updateCustomerDetailsForm" class="modal-content ui form">
         <div class="modal-header bg-secondary">
           <h5 class="modal-title text-white" id="exampleModalLongTitle">Update Details</h5>
           <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
@@ -191,7 +191,9 @@
             const PROMPT_MESSAGE = "Are you sure you would like to update customer file details?";
             const PROMPT = await ConfirmAction(PROMPT_MESSAGE)
             if(PROMPT){
-                updateCustomerDetails()
+                const data = getFormData('updateCustomerDetailsForm')
+                console.log(data)
+                updateCustomerDetails(data)
             }
         })
     })
@@ -206,7 +208,8 @@
                 },
                 body: JSON.stringify({
                     customer_ref: '{{$customer->customer_ref}}',
-                    status:status.toUpperCase()
+                    status:status.toUpperCase(),
+                    user_id:'{{Auth::user()->id}}'
                 })
             }
             let response  = await fetch(`${BASE_URL}/api/v1/customers/update-status`, options)
@@ -229,7 +232,7 @@
         data.customer_ref = '{{$customer->customer_ref}}'
         data.user_id = '{{Auth::user()->id}}'
         try{
-            $(".main-container").addClass('ui segment loading').attr('disabled',true);
+            $("#updateCustomerDetailsForm").addClass('loading').attr('disabled',true);
             const options = {
                 method: 'PUT',
                 headers: {
@@ -250,7 +253,7 @@
             console.log(err)
             swal('Process Failed!', 'Might be due to application crash or server error. Please try again later.', 'error')
         }finally{
-            $(".main-container").removeClass('ui segment loading');
+            $("#updateCustomerDetailsForm").removeClass('loading');
         }
     }
 

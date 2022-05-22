@@ -83,6 +83,11 @@ class CustomerController extends Controller
         if($validateCustomerResponse == 'OK'){
             $createCustomerResponse = CustomerService::createCustomer($request);
             if($createCustomerResponse['status'] == 'OK'){
+                if($request->has($request->user_id) && !empty($request->user_id)){
+                    $user_id = $request->user_id;
+                    $description = "Registered a new customer account with id _".$createCustomerResponse['data']->id."_";
+                    ActivityLoggerService::LogUserAction($user_id, 'CREATE', $description);
+                }
                 return response()->json([
                     'status' => 'success',
                     'message'=>'Customer created successfully!',
@@ -212,8 +217,15 @@ class CustomerController extends Controller
      */
     public function update(Request $request, Customer $customer)
     {
+
         //Update customer fields if present in request
         try{
+            print_r($customer);
+            exit();
+            if(!$customer){
+                //Invoke fallback method
+                $customer = Customer::where('customer_ref','=',$request->customer_ref)->first();
+            }
             if($customer){
                     if($request->has('msisdn') && !empty($request->msisdn)){
                         $customer->msisdn = $request->msisdn;
@@ -239,12 +251,23 @@ class CustomerController extends Controller
                     }
 
                     //Save Changes
-                    $customer->save();
+                    if($customer->save()){
+                         // Log user activity
+                        if($request->has($request->user_id) && !empty($request->user_id)){
+                            $description = 'Update Customer Details for '.$customer->customer_ref;
+                            ActivityLoggerService::LogUserAction($request->user_id, 'UPDATE', $description);
+                        }
 
-                    // Log user activity
-                    if($request->has($request->user_id) && !empty($request->user_id)){
-                        $description = 'Update Customer Details for '.$customer->customer_ref;
-                        ActivityLoggerService::LogUserAction($request->user_id, 'UPDATE', $description);
+                        //Return response
+                        return response()->json([
+                            'status' => 'success',
+                            'message'=>'Customer File updated successfully!'
+                        ]);
+                    }else{
+                        return response()->json([
+                            'status' => 'error',
+                            'message'=>'Customer File update to failed!'
+                        ]);
                     }
             }else{
                 return response()->json([
