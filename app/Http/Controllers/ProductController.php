@@ -4,22 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\InsuranceProduct;
 use App\Models\Premium;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 
 class ProductController extends Controller
 {
-   
+
 
     public function index()
     {
         if(Auth::check()){
             $products = InsuranceProduct::all();
+            $categories = Category::all();
             return view('pages.products.index')->with([
                 'title'=>"Insurance Products",
                 'subtitle'=>'List',
-                'products'=>$products
+                'products'=>$products,
+                'productCategories'=>$categories
             ]);
         }
         return redirect()->route('login')->withErrors([

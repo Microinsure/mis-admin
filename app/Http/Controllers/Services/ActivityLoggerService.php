@@ -24,4 +24,20 @@ class ActivityLoggerService extends Controller
             return false;
         }
   }
+
+  public static function LogCustomerAction($customer_ref, $action, $description){
+        try{
+            $activity = new CustomerActivityLogger();
+
+            $activity->customer_ref = $customer_ref;
+            $activity->action = $action;
+            $activity->description = $description;
+
+            $activity->save();
+
+            return true;
+        }catch(\Exception $e){
+            return false;
+        }
+    }
 }

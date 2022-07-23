@@ -18,9 +18,16 @@ return new class extends Migration
             $table->string('product_code',5)->unique()->nullable(false);
             $table->string('product_name',50)->unuque()->nullable(false);
             $table->string('product_description',200)->nullable(true);
+            $table->unsignedBigInteger('category')->nullable(false);
             $table->enum('status',['AVAILABLE','SUSPENDED'])->default('AVAILABLE');
             $table->timestamps();
         });
+
+        // add foreign key constraint
+        Schema::table('insurance_products', function (Blueprint $table) {
+            $table->foreign('category')->references('id')->on('categories')->onDelete('cascade');
+        });
+
     }
 
     /**

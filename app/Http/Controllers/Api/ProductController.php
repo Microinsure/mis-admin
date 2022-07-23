@@ -50,6 +50,16 @@ class ProductController extends Controller
 
     }
 
+    public function getByCategory(){
+        $category = request()->category;
+        $products = InsuranceProduct::where('category',$category)->get();
+        return response()->json([
+            'status'=>'success',
+            'message'=>'Products retrieved successfully!',
+            'data'=>$products
+        ]);
+    }
+
     /**
      * Display the specified resource.
      *

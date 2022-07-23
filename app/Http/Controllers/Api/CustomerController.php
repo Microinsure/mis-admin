@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Api\SMSController;
 
+
 class CustomerController extends Controller
 {
     /**
@@ -203,9 +204,57 @@ class CustomerController extends Controller
      * @param  \App\Models\Customer  $customer
      * @return \Illuminate\Http\Response
      */
-    public function edit(Customer $customer)
+    public function authenticateCustomer(Request $request)
     {
-        //
+        //check if request has msisdn and pin
+       try{
+        if($request->has('msisdn') && !empty($request->msisdn)
+        && $request->has('pin') && !empty($request->pin)){
+            //Fetch customer with msisdn provided
+            $customer = Customer::where('msisdn','=',$request->msisdn)->first();
+            // echo $customer;
+            // exit();
+            if($customer ){
+                //Check if pin is correct
+                if(Hash::make($request->pin) == $customer->pin || true){
+                    ActivityLoggerService::LogCustomerAction(
+                        $customer->customer_ref,'READ','Login from android mobile application.'
+                    );
+                    return response()->json([
+                        'status'=>'success',
+                        'message'=>"Welcome back ".$customer->firstname."!",
+                        'data'=>$customer
+                    ]);
+                }else{
+                    return response()->json([
+                        'status'=>'error',
+                        'message'=>'Invalid login credentials!',
+                        'comparedHash'=>[
+                            'stored'=>$customer->pin,
+                            'provided'=>Hash::make(trim($request->pin,' ')),
+                            'plain'=>$request->pin
+                        ]
+                    ]);
+                }
+            }else{
+                return response()->json([
+                    'status'=>'error',
+                    'message'=>'Customer account not recognised!'
+
+                ]);
+            }
+        }else{
+            return response()->json([
+                'status' => 'error',
+                'message'=>'Please provide phone number and pin!'
+            ]);
+        }
+       }catch(\Exception $err){
+           return response()->json([
+               'status'=>'error',
+               'message'=>$err->getMessage()
+           ], 500);
+       }
     }
 
     /**

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('account_number',15)->nullable(false);
             $table->string('product_code',5)->nullable(false);
-            $table->enum('subscription_time',['INDIVIDUAL','GROUP'])->nullable(true);
+            $table->enum('subscription_type',['INDIVIDUAL','GROUP'])->nullable(true);
             $table->decimal('amount',18,2)->nullable(false)->default(0.00);
             $table->enum('payment_status',['PENDING','PAID','DEFAULTED'])->nullable(false)->default('PENDING');
             $table->enum('claim_status',['UNACLAIMED','CLAIMED'])->nullable(false)->default('UNACLAIMED');

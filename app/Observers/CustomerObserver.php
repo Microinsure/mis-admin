@@ -3,7 +3,8 @@
 namespace App\Observers;
 
 use App\Models\Customer;
-//Import SMS Controller
+use App\Models\Account;
+use App\Models\AccountType;
 use App\Http\Controllers\Api\SMSController;
 
 class CustomerObserver
@@ -16,7 +17,16 @@ class CustomerObserver
      */
     public function created(Customer $customer)
     {
-        //
+        try{
+            $account = new Account();
+            $account->account_name = $customer->lastname." ".$customer->firstname;
+            $account->account_number = $customer->customer_ref;
+            $account->account_type = AccountType::where('name','=','Private Ledger')->first()->id;
+
+            $account->save();
+        }catch(\Exception $err){
+            
+        }
     }
 
     /**

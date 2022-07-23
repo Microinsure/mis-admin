@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Api\SMSController;
 
 
+
 class CustomerService extends Controller
 {
 
@@ -33,17 +34,12 @@ class CustomerService extends Controller
                 $isDefaultPin = true;
             }
             $customer->pin = Hash::make($data->pin);
-
-
             $customer->save();
             self::NotifyUserOfSuccessfulRegistration($data,$isDefaultPin);
 
-            // $description = "Registered new customer with ID: ".$customer->id;
-            // $action = "CREATE";
-            // ActivityLoggerService::LogUserAction(Auth::user()->id,$action,$description );
-
             return [
                 'status'=>'OK',
+                'message'=>'Account created successfully!',
                 'last_insert_id'=>$customer->id
             ];
     }catch(\Exception $e){
@@ -53,6 +49,7 @@ class CustomerService extends Controller
         ];
     }
 }
+
 
 public static function validateCustomerDetails($data){
     //Check if firstname, lastname, gender, msisdn exist
@@ -80,7 +77,7 @@ public static function validateCustomerDetails($data){
 
     private static function generateDefaultPinNumber(){
         //Generate random 4 digit number and return it
-        return rand(1000,9999);
+        return (string) rand(1000,9999);
     }
 
     private static function NotifyUserOfSuccessfulRegistration($data,$defaulPinCreated){

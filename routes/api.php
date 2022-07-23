@@ -18,16 +18,28 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::prefix('v1')->group(function () {
-    //SMS Routes
-    Route::resource('/sms', App\Http\Controllers\Api\SMSController::class);
+Route::group(['middleware' => ['api', 'cors']], function ($router) {
+    Route::prefix('v1')->group(function () {
+        //SMS Routes
+        Route::resource('/sms', App\Http\Controllers\Api\SMSController::class);
 
-    //Customer Routes
-    Route::put('/customers/reset-pin', [App\Http\Controllers\Api\CustomerController::class, 'resetPin']);
-    Route::put('/customers/update-status', [App\Http\Controllers\Api\CustomerController::class,'updateStatus']);
-    Route::resource('/customers', App\Http\Controllers\Api\CustomerController::class);
+        //Customer Routes
+        Route::put('/customers/reset-pin', [App\Http\Controllers\Api\CustomerController::class, 'resetPin']);
+        Route::put('/customers/update-status', [App\Http\Controllers\Api\CustomerController::class,'updateStatus']);
+        Route::resource('/customers', App\Http\Controllers\Api\CustomerController::class);
+        Route::post('/customers/auth', [App\Http\Controllers\Api\CustomerController::class, 'authenticateCustomer']);
+        //Product Routes
+        Route::resource('/products', App\Http\Controllers\Api\ProductController::class);
 
-    //Product Routes
-    Route::resource('/products', App\Http\Controllers\Api\ProductController::class);
+        //Get Product by Category
+        Route::get('/products/category/{category}', [App\Http\Controllers\Api\ProductController::class, 'getByCategory']);
+
+        Route::get('/categories', [App\Http\Controllers\Api\CategoryController::class, 'index']);
+
+        Route::resource('/premiums', App\Http\Controllers\Api\PremiumController::class);
+
+    });
 
 });
+
+

@@ -7,12 +7,11 @@
     "require": {
         "php": "^8.0.2",
         "africastalking/africastalking": "^3.0",
+        "fruitcake/laravel-cors": "^3.0",
         "guzzlehttp/guzzle": "^7.2",
-        "laravel-notification-channels/africastalking": "^3.2",
-        "laravel/framework": "^9.2",
+        "laravel/framework": "^9.19",
         "laravel/sanctum": "^2.14.1",
-        "laravel/tinker": "^2.7",
-        "sparors/laravel-ussd": "^2.4"
+        "laravel/tinker": "^2.7"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

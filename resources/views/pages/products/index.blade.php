@@ -29,21 +29,25 @@
                 </div>
                 <div class="card-body">
                     <form class="ui form" id="addProductForm">
+
                         <div class="form-group mt-4">
                             <label for="productName">Product Name</label>
                             <input type="text" class="form-control" id="productName" name="product_name" placeholder="Product Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="productStatus">Category</label>
+                            <select class="form-control" id="productStatus" name="productStatus" required>
+                                <option value="">Select</option>
+                                @foreach($productCategories as $productCategory)
+                                    <option value="{{ $productCategory->id }}">{{ $productCategory->category_name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="form-group mt-4">
                             <label for="productDescription">Product Description</label>
                             <textarea class="form-control" id="productDescription" name="product_description" placeholder="Product Description" required></textarea>
                         </div>
-                        {{-- <div class="form-group">
-                            <label for="productStatus">Product Status</label>
-                            <select class="form-control" id="productStatus" name="productStatus">
-                                <option value="1">Active</option>
-                                <option value="0">Inactive</option>
-                            </select>
-                        </div> --}}
+
                         <div class="form-group text-right my-3">
                             <button type="submit" class="ui right-floated float-right button positive circular medium">Add Product   <i class="icon check circle"></i></button>
                         </div>
