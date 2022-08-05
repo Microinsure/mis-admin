@@ -38,6 +38,10 @@ Route::group(['middleware' => ['api', 'cors']], function ($router) {
 
         Route::resource('/premiums', App\Http\Controllers\Api\PremiumController::class);
 
+        Route::resource('/subscriptions', App\Http\Controllers\Api\SubscriptionController::class);
+        Route::resource('/transactions', App\Http\Controllers\Api\TransactionsController::class);
+
+
     });
 
 });

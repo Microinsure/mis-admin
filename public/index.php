@@ -8,13 +8,13 @@ define('LARAVEL_START', microtime(true));
 
 $allowedOrigins = [
     'http://127.0.0.1:8080',
-    'http://localhost:8080'
+    'http://localhost:8080',
 ];
 //echo "Origin: ".$_SERVER['HTTP_ORIGIN'];
 
-if(isset($_SERVER['HTTP_ORIGIN']) && $_SERVER['HTTP_ORIGIN'] != '') {
-    foreach($allowedOrigins AS $allowedOrigin){
-        if(preg_match('#'. $allowedOrigin .'#', $_SERVER['HTTP_ORIGIN'])){
+if (isset($_SERVER['HTTP_ORIGIN']) && $_SERVER['HTTP_ORIGIN'] != '') {
+    foreach ($allowedOrigins as $allowedOrigin) {
+        if (preg_match('#' . $allowedOrigin . '#', $_SERVER['HTTP_ORIGIN'])) {
             header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
             header('Access-Control-Allow-Credentials: true');
             header('Access-Control-Allowed-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');
@@ -22,11 +22,10 @@ if(isset($_SERVER['HTTP_ORIGIN']) && $_SERVER['HTTP_ORIGIN'] != '') {
             header('Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With, X-CSRF-Token');
             break;
         }
-
-        }
+    }
 }
 
-if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
+if (file_exists($maintenance = __DIR__ . '/../storage/framework/maintenance.php')) {
     require $maintenance;
 }
 
@@ -41,7 +40,7 @@ if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php'))
 |
 */
 
-require __DIR__.'/../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -54,7 +53,7 @@ require __DIR__.'/../vendor/autoload.php';
 |
 */
 
-$app = require_once __DIR__.'/../bootstrap/app.php';
+$app = require_once __DIR__ . '/../bootstrap/app.php';
 
 $kernel = $app->make(Kernel::class);
 

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('product_code',5)->nullable(false);
             $table->enum('subscription_type',['INDIVIDUAL','GROUP'])->nullable(true);
             $table->decimal('amount',18,2)->nullable(false)->default(0.00);
+            $table->date('startdate')->nullable(false);
             $table->enum('payment_status',['PENDING','PAID','DEFAULTED'])->nullable(false)->default('PENDING');
             $table->enum('claim_status',['UNACLAIMED','CLAIMED'])->nullable(false)->default('UNACLAIMED');
             $table->enum('disbursement_status',['PENDING','DISBURSED','FAILED'])->nullable(false)->default('PENDING');
