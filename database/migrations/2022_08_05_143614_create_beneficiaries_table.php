@@ -20,14 +20,14 @@ return new class extends Migration
             $table->string('msisdn');
             $table->enum('gender',['Male', 'Female'])->nullable(false);
             $table->date('dob');
-
+            $table->string('relationship', 50);
             $table->timestamps();
         });
 
         // Create foreign key on customer_ref field
-        Schema::table('beneficiaries', function (Blueprint $table) {
-            $table->foreign('customer_ref')->references('customers')->on('customer_ref');
-        });
+        // Schema::table('beneficiaries', function (Blueprint $table) {
+        //     $table->foreign('customer_ref')->references('customers')->on('customer_ref');
+        // });
     }
 
     /**
