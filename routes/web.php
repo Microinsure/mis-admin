@@ -26,6 +26,8 @@ Route::get('/', function(){ return redirect()->route('dashboard');})->name('root
 Route::resource('/customers', App\Http\Controllers\CustomerController::class);
 Route::resource('/products', App\Http\Controllers\ProductController::class);
 Route::resource('/transactions', App\Http\Controllers\TransactionController::class);
+Route::resource('/premiums', App\Http\Controllers\PremiumsController::class);
+
 
 Route::prefix('users')->group(function(){
     Route::resource('/', App\Http\Controllers\UsersController::class);

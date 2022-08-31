@@ -106,6 +106,10 @@
                                     </a>
                                 </nav>
                             </div>
+                            <a class="nav-link" href="{{config('app.url')}}/premiums/create">
+                                <div class="sb-nav-link-icon"><i class="fas fa-coin"></i></div>
+                                Prices & Premiums
+                            </a>
                             <div class="sb-sidenav-menu-heading">Financial Management</div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
                                 Transactions
