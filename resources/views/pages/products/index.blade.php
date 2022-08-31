@@ -28,15 +28,15 @@
                     <h4 class="bg-secondary text-white p-3"> <i class="plus circle icon"></i> Add New Product</h4>
                 </div>
                 <div class="card-body">
-                    <form class="ui form" id="addProductForm">
+                    <form class="" id="addProductForm">
 
                         <div class="form-group mt-4">
                             <label for="productName">Product Name</label>
                             <input type="text" class="form-control" id="productName" name="product_name" placeholder="Product Name" required>
                         </div>
                         <div class="form-group">
-                            <label for="productStatus">Category</label>
-                            <select class="form-control" id="productStatus" name="productStatus" required>
+                            <label for="category">Category</label>
+                            <select class="form-control" id="category" name="category" required s>
                                 <option value="">Select</option>
                                 @foreach($productCategories as $productCategory)
                                     <option value="{{ $productCategory->id }}">{{ $productCategory->category_name }}</option>
@@ -89,6 +89,7 @@
                 const data = {
                     product_name: $("#productName").val(),
                     product_description: $("#productDescription").val()
+                    category:$("#category").val()
                 }
                 createProduct(data);
             })
@@ -121,7 +122,7 @@
         const createProduct = async (data)=>{
             try{
                 //Freeze form and load
-                $('#addProductForm').addClass('loading');
+                $('#addProductForm').addClass('ui form loading');
                 const options = {
                     'method':"POST",
                     'headers':{
@@ -141,7 +142,7 @@
             }catch(err){
                 swal('Connection Erro!','Make sure you have a stable internet connection!','error')
             }finally{
-                $('#addProductForm').removeClass('loading');
+                $('#addProductForm').removeClass('ui form loading');
             }
         }
     </script>

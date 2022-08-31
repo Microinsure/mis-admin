@@ -16,6 +16,7 @@ class ProductService extends Controller
             $product = new InsuranceProduct();
             $product->product_name = $data->product_name;
             $product->product_description = $data->product_description;
+            $product->category = $data->category;
 
             $product->save();
 
