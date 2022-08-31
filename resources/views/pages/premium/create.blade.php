@@ -71,6 +71,20 @@
             </thead>
             <tbody>
 
+                  @foreach($premiums as $key => $premium)
+                    <tr>
+                          <td>{{$key+1}}</td>
+                            <td>{{$premium->product_code}}</td>
+                            <td>{{$premium->product_name}}</td>
+                            <td>{{$premium->time_length}}</td>
+                            <td>MK{{$premium->amount}}</td>
+                            <td>
+                                <button class="ui button mini orange icon"><i class="icon edit"></i></button> |
+                                <button class="ui button mini negative icon"><i class="icon trash"></i></button>
+                            </td>
+                        </tr>
+                  @endforeach
+
             </tbody>
         </table>
     </div>
@@ -79,7 +93,7 @@
     $(()=>{
         console.log("Everything loaded!")
         $("#premiumsTable").DataTable({
-            pageLength:8
+            pageLength:5
         })
 
         $("#newPremiumForm").submit(function(e){

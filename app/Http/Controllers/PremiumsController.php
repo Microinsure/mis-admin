@@ -25,11 +25,12 @@ class PremiumsController extends Controller
      */
     public function create()
     {
-        $premiums = Premium::join('insurance_products', 'insurance_products.product_code','=','premiums.product_code')
-        ->join('categories', 'category.id', '=', 'products.category')
-        ->get(['premiums.*','insurance_products.product_name', 'categories.category_name']);
+        $premiums = Premium::join('insurance_products', 'insurance_products.product_code','=','premia.product_code')
+        ->join('categories', 'categories.id', '=', 'insurance_products.category')
+        ->get(['premia.*','insurance_products.product_name', 'categories.category_name']);
         return view('pages.premium.create')->with([
             'title'=>'Premiums',
+            'premiums'=>$premiums,
             'categories'=>Category::all()
         ]);
     }
