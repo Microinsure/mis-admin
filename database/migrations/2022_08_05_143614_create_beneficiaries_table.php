@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('beneficiaries', function (Blueprint $table) {
             $table->id();
-            $table->string('customer_ref')->nullable(false)->unique();
+            $table->string('customer_ref', 10)->nullable(false)->unique();
             $table->string('name');
             $table->string('msisdn');
             $table->enum('gender',['Male', 'Female'])->nullable(false);
