@@ -164,13 +164,15 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
         <script>
-            let getFormData = (form)=>{
-                let data = []
-                $(`#${form} input, #${form} select, #${form} textarea`).each(function(i, obj) {
-                    data[obj.name] = $(obj).val();
+            function getFormData(form) {
+                let form_data = $("#" + form).serializeArray();
+                let json_obj = {};
+                $.each(form_data, function (i, v) {
+                    json_obj[v.name] = v.value;
                 });
-                return data
+                return json_obj;
             }
+
             let ConfirmAction = (message)=>{
                 return new Promise((resolve, reject)=>{
                     swal({

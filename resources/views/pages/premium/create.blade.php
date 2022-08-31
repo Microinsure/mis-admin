@@ -85,8 +85,6 @@
         $("#newPremiumForm").submit(function(e){
             e.preventDefault()
             const data = getFormData('newPremiumForm')
-            console.log(data)
-
             createNewPremium(data)
         })
 
@@ -122,24 +120,28 @@
     }
 
     let createNewPremium = async (data)=>{
+        console.log(data)
         try{
             $("#newPremiumForm").addClass('ui form loading')
             const options = {
                 method:"POST",
                 headers:{
-                    'Contemt-Type':'application/json'
+                    'Content-Type':'application/json'
                 },
                 body:JSON.stringify(data)
             }
+            console.log(options)
             let response = await fetch(BASE_URL+"/api/v1/premiums", options)
             response = await response.json()
 
             if(response.status == 'success'){
+                swal('Process Completed!', response.message, response.status)
+
                 setTimeout(() => {
                     location.reload()
                 }, 2000);
             }else{
-                swal('Error!', response.message, response.status)
+                swal('Process Failed!', response.message, response.status)
             }
         }catch(err){
             swal('Connection Error!', err.message,'error')

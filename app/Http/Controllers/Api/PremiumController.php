@@ -26,7 +26,8 @@ class PremiumController extends Controller
     {
       try{
           //start by verifying if premium for this product doesn't already exist
-        if(count(Premium::where('product_code', '=', $request->product)->get()) > 0){
+        if(count(Premium::where('product_code', '=', $request->product)
+        ->where('time_length','=', $request->time_length."_".$request->time_unit)->get()) > 0){
             return response()->json([
                 'status'=>'error',
                 'message'=>'A premium for this product already exist!'
@@ -39,6 +40,11 @@ class PremiumController extends Controller
         $premium->amount = $request->amount;
 
         $premium->save();
+
+        return response()->json([
+            'status'=>'success',
+            'message'=>'New premium created successfully!'
+        ]);
       }catch(\Exception $err){
             return response()->json([
                 'status' => 'error',
