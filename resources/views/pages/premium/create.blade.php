@@ -122,7 +122,8 @@
     }
 
     let createNewPremium = async (data)=>{
-        try{git 
+        try{
+            $("#newPremiumForm").addClass('ui form loading')
             const options = {
                 method:"POST",
                 headers:{
@@ -142,6 +143,8 @@
             }
         }catch(err){
             swal('Connection Error!', err.message,'error')
+        }finally{
+            $("#newPremiumForm").removeClass('ui form loading')
         }
     }
 </script>
