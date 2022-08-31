@@ -77,9 +77,39 @@
 </div>
 <script>
     (()=>{
+        console.log("Everything loaded!")
         $("#premiumsTable").DataTable({
             pageLength:8
         })
+
+        $("#categroy").change(()=>{
+            console.log('Something changed!')
+            let category = $("#categroy").val()
+            if(category != ''){
+                getProductsBycategory(category)
+            }
+        })
     })
+
+    async function getProductsBycategory(category){
+        try{
+            let response = await fetch(`${BASE_URL}/api/v1/products/category/${category}`)
+            response = await response.json()
+
+            if(response.status == 'success'){
+                $("#product").html('')
+                let DOM = response.data.map(product=>{
+                    return `<option value="${product.product_code}">${product.product_name}</option>`;
+                }).join()
+                DOM += "<option selected value=''>Select</option>"
+                $("#product").html(DOM)
+            }else{
+                alert('Failed to fetch Insurance Products!');
+            }
+        }catch(err){
+            console.log(err)
+            alert(err.message)
+        }
+    }
 </script>
 @endsection
