@@ -88,7 +88,7 @@
                 e.preventDefault();
                 const data = {
                     product_name: $("#productName").val(),
-                    product_description: $("#productDescription").val()
+                    product_description: $("#productDescription").val(),
                     category:$("#category").val()
                 }
                 createProduct(data);
