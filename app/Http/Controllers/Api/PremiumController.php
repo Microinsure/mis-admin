@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Premium;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Services\PremiumService;
 
 class PremiumController extends Controller
 {
@@ -20,69 +21,32 @@ class PremiumController extends Controller
         return response()->json($premiums);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+      try{
+          //start by verifying if premium for this product doesn't already exist
+        if(count(Premium::where('product_code', '=', $request->product)->get()) > 0){
+            return response()->json([
+                'status'=>'error',
+                'message'=>'A premium for this product already exist!'
+            ]);
+        }
+        $premium = new Premium();
+        $premium->product_code = $request->product;
+        $premium->time_length = $request->time_length."_".$request->time_unit;
+        $premium->time_in_seconds = PremiumService::convertTimtToSeconds($request->time_length, $request->time_unit);
+        $premium->amount = $request->amount;
+
+        $premium->save();
+      }catch(\Exception $err){
+            return response()->json([
+                'status' => 'error',
+                'message' => $err->getMessage()
+            ]);
+      }
+
+
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Premium  $premium
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Premium $premium)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Premium  $premium
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Premium $premium)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Premium  $premium
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Premium $premium)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Premium  $premium
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Premium $premium)
-    {
-        //
-    }
 }

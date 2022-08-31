@@ -69,7 +69,7 @@
 
 <script>
     $(()=>{
-
+        console.log('Something happed!')
         //Implement Ajax DataTable
         $('#customersTable').DataTable({
             processing: true,

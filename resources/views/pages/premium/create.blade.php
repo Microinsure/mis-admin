@@ -8,7 +8,7 @@
 
     <div class="col-8">
         <fieldset class="">
-            <form action="#" >
+            <form action="#" id="newPremiumForm" >
                 <div class="form-row">
                         <div class="form-group col-3">
                             <label for="">Category :</label>
@@ -76,10 +76,18 @@
     </div>
 </div>
 <script>
-    (()=>{
+    $(()=>{
         console.log("Everything loaded!")
         $("#premiumsTable").DataTable({
             pageLength:8
+        })
+
+        $("#newPremiumForm").submit(function(e){
+            e.preventDefault()
+            const data = getFormData('newPremiumForm')
+            console.log(data)
+
+            createNewPremium(data)
         })
 
         $("#categroy").change(()=>{
@@ -103,12 +111,37 @@
                 }).join()
                 DOM += "<option selected value=''>Select</option>"
                 $("#product").html(DOM)
+                response.data.length > 0 ? $('#product').attr('disabled', false) : $('#product').attr('disabled', true)
             }else{
                 alert('Failed to fetch Insurance Products!');
             }
         }catch(err){
             console.log(err)
             alert(err.message)
+        }
+    }
+
+    let createNewPremium = async (data)=>{
+        try{git 
+            const options = {
+                method:"POST",
+                headers:{
+                    'Contemt-Type':'application/json'
+                },
+                body:JSON.stringify(data)
+            }
+            let response = await fetch(BASE_URL+"/api/v1/premiums", options)
+            response = await response.json()
+
+            if(response.status == 'success'){
+                setTimeout(() => {
+                    location.reload()
+                }, 2000);
+            }else{
+                swal('Error!', response.message, response.status)
+            }
+        }catch(err){
+            swal('Connection Error!', err.message,'error')
         }
     }
 </script>
