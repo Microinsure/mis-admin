@@ -19,13 +19,13 @@ class CustomerObserver
     {
         try{
             $account = new Account();
-            $account->account_name = $customer->lastname." ".$customer->firstname;
+            $account->account_name = $customer->lastname." ".$customer->firstname." - PRIVATE LEDGER";
             $account->account_number = $customer->customer_ref;
-            $account->account_type = AccountType::where('name','=','Private Ledger')->first()->id;
+            $account->account_type = AccountType::where('name','=','Individual')->first()->id;
 
             $account->save();
         }catch(\Exception $err){
-            
+
         }
     }
 

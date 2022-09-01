@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Services;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
+use App\Models\Account;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Api\SMSController;
 
@@ -89,4 +90,6 @@ public static function validateCustomerDetails($data){
         }
         return SMSController::sendSMS($data->msisdn, $message);
     }
+
+  
 }
