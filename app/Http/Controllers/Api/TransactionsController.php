@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
+use App\Http\Controllers\Api\SMSController;
 use App\Models\Subscription;
+use App\Models\InsuranceProduct;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 
 class TransactionsController extends Controller
@@ -68,17 +71,43 @@ class TransactionsController extends Controller
 
             $transaction->save();
 
+            $subscription = Subscription::where('id', '=', $transaction->subscription)->first();
+
             if($data['transaction']['status_code'] == 'TS'){
-                $subscription = Subscription::where('id', '=', $transaction->subscription)->first();
                 $subscription->payment_status = 'PAID';
                 $subscription->validity = 'ACTIVE';
 
                 $subscription->save();
             }
 
+            self::NotifyCustomer($data['transaction']['status_code'], $subscription,$transaction->txn_amount, $transaction);
+
             return "OK";
         }catch(\Exception $err){
             return $err->getMessage();
         }
+    }
+
+    private static function NotifyCustomer($status, $subscription, $amount, $transaction){
+
+        $message = "";
+        $details = InsuranceProduct::join('categories', 'categories.id', '=','insurance_products.category')
+        ->where('insurance_products.product_code', '=',$subscription->product_code)->get(
+            [
+                'insurance_products.product_name',
+                'categories.category_name'
+        ]);
+        $details = $details[0];
+        if($status == 'TS'){
+            $message = "Dear customer, you have purchased up for ";
+            $message .= $details->product_name." ".$details->categry_name." Cover ";
+            $message .= " valid for ".strtoupper($subscription->time_length)." at MK".number_format($amount)." Premium.";
+        }else{
+            $message = "Failed premium payment for order ".$transaction->txn_internal_reference;
+            $message .= " - ". $details->product_name . " " . $details->categry_name . " Cover. ";
+            $message .= "Make sure you enter the correct wallet Pin and you have sufficient balance";
+        }
+        $msisdn = Customer::where('customer_ref', '=', $transaction->txn_account_number)->first()->msisdn;
+        SMSController::sendSMS($msisdn, $message);
     }
 }
