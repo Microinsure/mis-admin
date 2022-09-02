@@ -40,10 +40,11 @@ class SubscriptionController extends Controller
         try{
 
             $subscriptionResponse = SubscriptionService::createSubscription($request);
-           if($subscriptionResponse == 'OK'){
+           if($subscriptionResponse['status'] == 'OK'){
                 return response()->json([
                     'status'=>'success',
-                    'message'=>'Subscription placed successfully!'
+                    'message'=>'Subscription placed successfully!',
+                    'data'=>$subscriptionResponse['data']
                 ]);
            }
            return response()->json([

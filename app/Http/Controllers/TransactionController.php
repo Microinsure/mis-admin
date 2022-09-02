@@ -29,16 +29,17 @@ class TransactionController extends Controller
         ]);
     }
 
-    private static function Transact($msisdn,$amount, $payment_channel){
+    public static function Transact($msisdn,$amount, $payment_channel, $account_number, $subscription){
 
         switch($payment_channel){
             case 'airtel-money':
-                PaymentProcessingService::RequestAirtelMoneyPayment($msisdn, $amount);
+                return PaymentProcessingService::RequestAirtelMoneyPayment($msisdn, $amount,$account_number, $subscription);
                 break;
             case 'tnm-mpamba':
 
                 break;
         };
     }
+
 
 }

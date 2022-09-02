@@ -23,6 +23,7 @@ return new class extends Migration
             $table->enum('payment_status',['PENDING','PAID','DEFAULTED'])->nullable(false)->default('PENDING');
             $table->enum('claim_status',['UNACLAIMED','CLAIMED'])->nullable(false)->default('UNACLAIMED');
             $table->enum('disbursement_status',['PENDING','DISBURSED','FAILED'])->nullable(false)->default('PENDING');
+            $table->enum('validity', ['PENDING', 'ACTIVE', 'EXPIRED'])->default('PENDING');
             $table->timestamps();
         });
 

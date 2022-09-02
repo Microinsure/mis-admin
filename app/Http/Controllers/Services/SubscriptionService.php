@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Services;
 use App\Http\Controllers\Controller;
 use App\Models\Subscription;
 use App\Models\Premium;
-use Illuminate\Http\Request;
+use App\Models\Transaction;
+use App\Http\Controllers\TransactionController;
 
 class SubscriptionService extends Controller
 {
@@ -21,11 +22,15 @@ class SubscriptionService extends Controller
 
             $subscription->save();
 
-            return 'OK';
+            $transaction = TransactionController::Transact($data->msisdn, $subscription->amount, $data->paymentChannel, $data->customer_ref, $subscription->id);
+
+
+            return ['status'=>'OK', 'data'=>$transaction];
        }catch(\Exception $e){
-           return $e->getMessage();
+           return ['status'=>'error', 'message'=> $e->getMessage()];
        }
     }
+
 
     private static function calculatePremium($data){
         $premium = Premium::findOrFail($data->premium);

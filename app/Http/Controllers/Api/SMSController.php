@@ -14,7 +14,7 @@ class SMSController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //Fetch all records from SMSMessage and filter with msisdn and date if available
         try{
@@ -81,7 +81,11 @@ class SMSController extends Controller
                 'message' => $message,
                 'from'    => $senderId
             ]);
-
+            $sms = new SMSMessage();
+            $sms->msisdn = $msisdn;
+            $sms->contents = $message;
+            $sms->save();
+            
             return true;
         }catch(\Exception $e){
             return false;

@@ -17,12 +17,11 @@ class CategorySeeder extends Seeder
     {
         // array list of default insurance categories
         $categories = [
-            'Health',
-            'Life',
-            'Property',
-            'Car',
-            'Travel',
-            'Other'
+            'Health Insurance',
+            'Life Insurance',
+            'Property Insurance',
+            'Vehicle Insurance',
+            'Travel Insurance'
         ];
         // insert each category into the database
         foreach ($categories as $category) {

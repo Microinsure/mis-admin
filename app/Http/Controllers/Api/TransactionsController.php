@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
+use App\Models\Subscription;
 use Illuminate\Http\Request;
 
 class TransactionsController extends Controller
@@ -42,69 +43,41 @@ class TransactionsController extends Controller
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+
+    public function handleCallback(Request $request)
     {
-        //
+        $service = request()->service;
+        try{
+            if($service == 'airtelmoney'){
+                $handle = self::handleAirtelMoneyCallback($request);
+                return ($handle == 'OK') ? response()->json(['message'=>'OK'],200) : response()->json(['message'=>$handle],500);
+            }
+        }catch(\Exception $err){
+
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+    private static function handleAirtelMoneyCallback($data){
+        // TS = Transaction Success && TF = Transaction Failure
+        try{
+            $transaction = Transaction::where('txn_internal_reference', '=', $data->transaction->id)->first();
+            $transaction->txn_external_reference = $data->transaction->airtel_money_id;
+            $transaction->txn_status = ($data->transaction->status_code == 'TS') ? 'SUCCESS' : 'FAILED';
+            $transaction->txn_message = $data->transaction->message;
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Transaction  $transaction
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Transaction $transaction)
-    {
-        //
-    }
+            $transaction->save();
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Transaction  $transaction
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Transaction $transaction)
-    {
-        //
-    }
+            if($data->transaction->status_code == 'TS'){
+                $subscription = Subscription::where('subscription', '=', $transaction->subscription)->first();
+                $subscription->payment_status = 'PAID';
+                $subscription->validity = 'ACTIVE';
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Transaction  $transaction
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Transaction $transaction)
-    {
-        //
-    }
+                $subscription->save();
+            }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Transaction  $transaction
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Transaction $transaction)
-    {
-        //
+            return "OK";
+        }catch(\Exception $err){
+            return $err->getMessage();
+        }
     }
 }
