@@ -12,7 +12,7 @@ class PaymentProcessingService extends Controller
     public static function RequestAirtelMoneyPayment($msisdn, $amount, $account_number, $subscription)
     {
         //Request Authorization Token
-        $msisdn = 999959024;
+
         $response = self::requestAirtelToken();
         if($response['status'] == 'success'){
             $token = $response['token'];
@@ -23,7 +23,7 @@ class PaymentProcessingService extends Controller
                         "subscriber"=>[
                             'country'=>"MW",
                             'currency'=>'MWK',
-                            'msisdn'=>substr($msisdn, 3, (strlen($msisdn) - 1))
+                            'msisdn'=> 999959024//substr($msisdn, 3, (strlen($msisdn) - 1))
                         ],
                         'transaction'=>[
                             'amount'=>$amount,
