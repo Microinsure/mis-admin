@@ -47,28 +47,29 @@ class TransactionsController extends Controller
     public function handleCallback(Request $request)
     {
         $service = request()->service;
+
         try{
             if($service == 'airtelmoney'){
                 $handle = self::handleAirtelMoneyCallback($request);
                 return ($handle == 'OK') ? response()->json(['message'=>'OK'],200) : response()->json(['message'=>$handle],500);
             }
         }catch(\Exception $err){
-
+            return response()->json(['message'=>$err->getMessage()],500);
         }
     }
 
     private static function handleAirtelMoneyCallback($data){
         // TS = Transaction Success && TF = Transaction Failure
         try{
-            $transaction = Transaction::where('txn_internal_reference', '=', $data->transaction->id)->first();
-            $transaction->txn_external_reference = $data->transaction->airtel_money_id;
-            $transaction->txn_status = ($data->transaction->status_code == 'TS') ? 'SUCCESS' : 'FAILED';
-            $transaction->txn_message = $data->transaction->message;
+            $transaction = Transaction::where('txn_internal_reference', '=', $data['transaction']['id'])->first();
+            $transaction->txn_external_reference = $data['transaction']['airtel_money_id'];
+            $transaction->status = ($data['transaction']['status_code'] == 'TS') ? 'SUCCESS' : 'FAILED';
+            $transaction->txn_message = $data['transaction']['message'];
 
             $transaction->save();
 
-            if($data->transaction->status_code == 'TS'){
-                $subscription = Subscription::where('subscription', '=', $transaction->subscription)->first();
+            if($data['transaction']['status_code'] == 'TS'){
+                $subscription = Subscription::where('id', '=', $transaction->subscription)->first();
                 $subscription->payment_status = 'PAID';
                 $subscription->validity = 'ACTIVE';
 
