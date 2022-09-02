@@ -110,4 +110,11 @@ class TransactionsController extends Controller
         $msisdn = Customer::where('customer_ref', '=', $transaction->txn_account_number)->first()->msisdn;
         SMSController::sendSMS($msisdn, $message);
     }
+
+    public function checkTxnStatus(){
+        $internal_reference = request()->internal_reference;
+        return response()->json([
+            'status'=>Transaction::where('txn_internal_reference', '=', $internal_reference)->first()->status
+        ]);
+    }
 }

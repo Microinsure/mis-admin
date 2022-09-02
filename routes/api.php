@@ -41,7 +41,7 @@ Route::group(['middleware' => ['api', 'cors']], function ($router) {
         Route::resource('/subscriptions', App\Http\Controllers\Api\SubscriptionController::class);
         Route::resource('/transactions', App\Http\Controllers\Api\TransactionsController::class);
         Route::post('/transactions/callback/{service}', [App\Http\Controllers\Api\TransactionsController::class,'handleCallback']);
-
+        Route::get('/transactions/status/check/{internal_reference}', [App\Http\Controllers\Api\TransactionsController::class, 'checkTxnStatus']);
     });
 
 });
