@@ -101,9 +101,11 @@ class TransactionsController extends Controller
         ]);
         $details = $details[0];
         if($status == 'TS'){
-            $message = "Dear customer, you have made a payment for ";
-            $message .= $details->product_name." ".$details->category_name." Insurance Cover ";
-            $message .= "valid for ".strtoupper($details->time_length)." at MK".number_format($amount)." Premium.";
+            //Split time_length
+            $time = $details->time_length.spli('_');
+            $message = "Dear customer, you have paid a premium of ".number_format($amount);
+            $message .= " towards ".$details->product_name." ".$details->category_name." Insurance Product ";
+            $message .= "valid for ".$time[0]." ".ucfirst($time[1]);
         }else{
             $message = "Failed premium payment for order ".$transaction->txn_internal_reference;
             $message .= " - ". $details->product_name . " " . $details->category_name . " Cover. ";
