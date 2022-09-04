@@ -97,7 +97,7 @@ class TransactionsController extends Controller
             [
                 'insurance_products.product_name',
                 'categories.category_name',
-                'insurance_products.time_length'
+                'premia.time_length'
         ]);
         $details = $details[0];
         if($status == 'TS'){
