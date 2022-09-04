@@ -92,19 +92,21 @@ class TransactionsController extends Controller
 
         $message = "";
         $details = InsuranceProduct::join('categories', 'categories.id', '=','insurance_products.category')
+        ->join('premia', 'premia.product_code', '=', 'insurance_products.product_code')
         ->where('insurance_products.product_code', '=',$subscription->product_code)->get(
             [
                 'insurance_products.product_name',
-                'categories.category_name'
+                'categories.category_name',
+                'insurance_products.time_length'
         ]);
         $details = $details[0];
         if($status == 'TS'){
             $message = "Dear customer, you have made a payment for ";
-            $message .= $details->product_name." ".$details->categry_name." Insurance Cover ";
-            $message .= "valid for ".strtoupper($subscription->time_length)." at MK".number_format($amount)." Premium.";
+            $message .= $details->product_name." ".$details->category_name." Insurance Cover ";
+            $message .= "valid for ".strtoupper($details->time_length)." at MK".number_format($amount)." Premium.";
         }else{
             $message = "Failed premium payment for order ".$transaction->txn_internal_reference;
-            $message .= " - ". $details->product_name . " " . $details->categry_name . " Cover. ";
+            $message .= " - ". $details->product_name . " " . $details->category_name . " Cover. ";
             $message .= "Make sure you enter the correct wallet Pin and you have sufficient balance";
         }
         $msisdn = Customer::where('customer_ref', '=', $transaction->txn_account_number)->first()->msisdn;
