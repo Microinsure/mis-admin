@@ -102,7 +102,7 @@ class TransactionsController extends Controller
         $details = $details[0];
         if($status == 'TS'){
             //Split time_length
-            $time = $details->time_length.spli('_');
+            $time = explode($details->time_length,'_');
             $message = "Dear customer, you have paid a premium of ".number_format($amount);
             $message .= " towards ".$details->product_name." ".$details->category_name." Insurance Product ";
             $message .= "valid for ".$time[0]." ".ucfirst($time[1]);
