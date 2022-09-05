@@ -53,7 +53,7 @@ class TransactionsController extends Controller
         $service = request()->service;
 
         try{
-            Storage::disk('public')->put('callbacks/callback-001.json', json_encode($request->all()));
+            Storage::disk('public')->put('callback-001.json', json_encode($request->all()));
             if($service == 'airtelmoney'){
                 $handle = self::handleAirtelMoneyCallback($request);
                 return ($handle == 'OK') ? response()->json(['message'=>'OK'],200) : response()->json(['message'=>$handle],500);
