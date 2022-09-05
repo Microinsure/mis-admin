@@ -9,6 +9,7 @@ use App\Models\Subscription;
 use App\Models\InsuranceProduct;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class TransactionsController extends Controller
 {
@@ -52,6 +53,7 @@ class TransactionsController extends Controller
         $service = request()->service;
 
         try{
+            Storage::disk('public')->put('callback.json', json_encode($request));
             if($service == 'airtelmoney'){
                 $handle = self::handleAirtelMoneyCallback($request);
                 return ($handle == 'OK') ? response()->json(['message'=>'OK'],200) : response()->json(['message'=>$handle],500);
