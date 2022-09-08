@@ -67,6 +67,11 @@ class TransactionsController extends Controller
         // TS = Transaction Success && TF = Transaction Failure
         try{
             $transaction = Transaction::where('txn_internal_reference', '=', $data['transaction']['id'])->first();
+
+            if($transaction == null){
+                SMSController::sendSMS('+265994791131', json_encode($data));
+                return;
+            }
             $transaction->txn_external_reference = $data['transaction']['airtel_money_id'];
             $transaction->status = ($data['transaction']['status_code'] == 'TS') ? 'SUCCESS' : 'FAILED';
             $transaction->txn_message = $data['transaction']['message'];
