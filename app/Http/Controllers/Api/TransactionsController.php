@@ -105,8 +105,8 @@ class TransactionsController extends Controller
         if($status == 'TS'){
             //Split time_length
             $time = explode('_', $details->time_length);
-            $message = "Dear customer, you have paid a premium of ".number_format($amount);
-            $message .= " towards ".$details->product_name." ".$details->category_name." Insurance Product ";
+            $message = "Dear customer, you have paid a premium of MK" . number_format($amount, 2);
+            $message .= " towards " . $details->product_name . " " . $details->category_name . " Product ";
             $message .= "valid for ".$time[0]." ".ucfirst($time[1]);
         }else{
             $message = "Failed premium payment for order ".$transaction->txn_internal_reference;
