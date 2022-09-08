@@ -23,7 +23,7 @@ class PaymentProcessingService extends Controller
                         "subscriber"=>[
                             'country'=>"MW",
                             'currency'=>'MWK',
-                            'msisdn'=> 992560217//999959024//substr($msisdn, 3, (strlen($msisdn) - 1))
+                            'msisdn'=> 999959024//992560217//999959024//substr($msisdn, 3, (strlen($msisdn) - 1))
                         ],
                         'transaction'=>[
                             'amount'=>$amount,
