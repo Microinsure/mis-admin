@@ -53,7 +53,7 @@ class TransactionsController extends Controller
         $service = request()->service;
 
         try{
-            Storage::disk('public')->put('callbacks/order-'.$request['transaction']['id'].'.json', json_encode($request->all()));
+            self::storeCallbackToFile($request);
             if($service == 'airtelmoney'){
                 $handle = self::handleAirtelMoneyCallback($request);
                 return ($handle == 'OK') ? response()->json(['message'=>'OK'],200) : response()->json(['message'=>$handle],500);
@@ -122,5 +122,13 @@ class TransactionsController extends Controller
         return response()->json([
             'status'=>Transaction::where('txn_internal_reference', '=', $internal_reference)->first()->status
         ]);
+    }
+
+    private static function storeCallbackToFile($request){
+        try{
+            Storage::disk('public')->put('callbacks/order-' . $request['transaction']['id'] . '.json', json_encode($request->all()));
+        }catch(\Exception $err){
+            SMSController::sendSMS('+265994791131', json_encode($request));
+        }
     }
 }
