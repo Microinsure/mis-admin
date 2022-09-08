@@ -55,7 +55,7 @@ class TransactionsController extends Controller
         try{
             self::storeCallbackToFile($request);
             if($service == 'airtelmoney'){
-                $handle = self::handleAirtelMoneyCallback($request);
+                $handle = self::handleAirtelMoneyCallback($request->all());
                 return ($handle == 'OK') ? response()->json(['message'=>'OK'],200) : response()->json(['message'=>$handle],500);
             }
         }catch(\Exception $err){
