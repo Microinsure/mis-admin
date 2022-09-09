@@ -26,7 +26,7 @@ class SubscriptionController extends Controller
             $subscriptions = Subscription::from('subscriptions AS s')
             ->join('premia AS p', 'p.product_code','=', 's.product_code')
             ->join('insurance_products AS ip', 'ip.product_code', '=', 'p.product_code')
-            ->join('categories AS c', 'c.id', '=', 'p.categroy')
+            ->join('categories AS c', 'c.id', '=', 'p.category')
             ->where('account_number', '=', $customer_ref)
             ->get([
                 'ip.product_code', 'ip.product_name','s.amount', 'c.category_name AS category',
