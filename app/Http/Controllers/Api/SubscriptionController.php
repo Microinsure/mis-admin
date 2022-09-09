@@ -28,7 +28,7 @@ class SubscriptionController extends Controller
             ->join('insurance_products AS ip', 'ip.product_code', '=', 'p.product_code')
             ->where('account_number', '=', $customer_ref)
             ->get([
-                'ip.product_code', 'ip.product_name','a.amount',
+                'ip.product_code', 'ip.product_name','s.amount',
                 'p.time_length','s.subscription_type', 's.payment_status',
                 's.created_at', 's.startdate', 's.claim_status', 's.disbursement_status'
             ]);
