@@ -18,22 +18,34 @@ class SubscriptionController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function fetchUserSubscriptions(Request $request)
     {
+        try{
+            $customer_ref = request()->customer_ref;
 
+            $subscriptions = Subscription::from('subscriptions AS s')
+            ->join('premia AS p', 'p.product_code','=', 's.product_code')
+            ->join('insurance_products AS ip', 'ip.product_code', '=', 'p.product_code')
+            ->where('account_number', '=', $customer_ref)
+            ->get([
+                'ip.product_code', 'ip.product_name','a.amount',
+                'p.time_length','s.subscription_type', 's.payment_status',
+                's.created_at', 's.startdate', 's.claim_status', 's.disbursement_status'
+            ]);
+
+            return response()->json([
+                'status'=>'success',
+                'message'=>count($subscriptions)." records found!",
+                'data'=>$subscriptions
+            ]);
+        }catch(\Exception $err){
+            return response()->json([
+                'status'=>'success',
+                'message'=>$err->getMessage()
+            ]);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
 
