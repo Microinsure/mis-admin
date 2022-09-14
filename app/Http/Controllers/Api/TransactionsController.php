@@ -9,6 +9,7 @@ use App\Models\Subscription;
 use App\Models\InsuranceProduct;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class TransactionsController extends Controller
@@ -50,6 +51,7 @@ class TransactionsController extends Controller
     public function advancedSearch(Request $request){
 
         try{
+            DB::enableQueryLog();
             $transactions = Transaction::from('transactions AS t')
             ->join('transaction_channels AS tc', 'tc.id', '=', 't.txn_channel')
             ->join('subscriptions AS s', 's.id', '=', 't.subscription')
@@ -76,6 +78,7 @@ class TransactionsController extends Controller
             if ($request->has('txn_channel')) {
                 $transactions->where('t.txn_cnannel', '=', $request->txn_channel);
             }
+
             $transactions->get([
                 'acc.account_name',
                 'acc.account_number',
@@ -91,7 +94,7 @@ class TransactionsController extends Controller
 
             return response()->json([
                 'status'=>'success',
-                'message'=>count($transactions)." results found!",
+                'message'=>dd(DB::getQueryLog()),//count($transactions)." results found!",
                 'data'=>$transactions
             ]);
         }catch(\Exception $err){
