@@ -94,7 +94,7 @@ class TransactionsController extends Controller
 
             return response()->json([
                 'status'=>'success',
-                'message'=>count($transactions)." results found!",//dd(DB::getQueryLog())
+                'message'=>"Query completed successfully!",//dd(DB::getQueryLog())
                 'data'=>$transactions
             ]);
         }catch(\Exception $err){
