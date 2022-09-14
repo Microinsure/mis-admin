@@ -51,7 +51,7 @@ class TransactionsController extends Controller
     public function advancedSearch(Request $request){
 
         try{
-            DB::enableQueryLog();
+            //DB::enableQueryLog();
             $transactions = Transaction::from('transactions AS t')
             ->join('transaction_channels AS tc', 'tc.id', '=', 't.txn_channel')
             ->join('subscriptions AS s', 's.id', '=', 't.subscription')
@@ -94,7 +94,7 @@ class TransactionsController extends Controller
 
             return response()->json([
                 'status'=>'success',
-                'message'=>dd(DB::getQueryLog()),//count($transactions)." results found!",
+                'message'=>count($transactions)." results found!",//dd(DB::getQueryLog())
                 'data'=>$transactions
             ]);
         }catch(\Exception $err){
