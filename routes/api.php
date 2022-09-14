@@ -41,9 +41,11 @@ Route::group(['middleware' => ['api', 'cors']], function ($router) {
         Route::get('/subscriptions/users/{customer_ref}', [App\Http\Controllers\Api\SubscriptionController::class, 'fetchUserSubscriptions']);
         Route::resource('/subscriptions', App\Http\Controllers\Api\SubscriptionController::class);
 
-        Route::resource('/transactions', App\Http\Controllers\Api\TransactionsController::class);
         Route::post('/transactions/callback/{service}', [App\Http\Controllers\Api\TransactionsController::class,'handleCallback']);
         Route::get('/transactions/status/check/{internal_reference}', [App\Http\Controllers\Api\TransactionsController::class, 'checkTxnStatus']);
+        Route::get('/transactions/search', [App\Http\Controllers\Api\TransactionsController::class, 'advancedSearch']);
+        Route::resource('/transactions', App\Http\Controllers\Api\TransactionsController::class);
+
     });
 
 });

@@ -12,7 +12,15 @@ class TransactionController extends Controller
 {
     //
     public function index(Request $request){
-
+        if(Auth::check()){
+            return view('pages.transactions.index')->with([
+                'title'=>'Transactions',
+                'subtitle'=>'Search'
+            ]);
+        }
+        return redirect()->route('login')->withErrors([
+            'access_denied' => 'Your session has expired. Please login to continue!'
+        ]);
     }
 
     public function create(){

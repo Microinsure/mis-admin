@@ -117,7 +117,7 @@
                             </a>
                             <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="{{config('app.url')}}/transactions/create">Lookup/Search</a>
+                                    <a class="nav-link" href="{{config('app.url')}}/transactions">Lookup/Search</a>
                                     <a class="nav-link" href="{{config('app.url')}}/transactions/create">Process Transaction</a>
 
                                 </nav>

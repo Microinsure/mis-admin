@@ -47,6 +47,62 @@ class TransactionsController extends Controller
         }
     }
 
+    public function advancedSearch(Request $request){
+
+        try{
+            $transactions = Transaction::from('transactions AS t')
+            ->join('transaction_channels AS tc', 'tc.id', '=', 't.txn_channel')
+            ->join('subscriptions AS s', 's.id', '=', 't.subscription')
+            ->join('customers AS c', 'c.customer_ref', '=', 't.txn_account_number')
+            ->join('accounts AS acc', 'acc.account_number', '=', 'c.customer_ref');
+
+
+            if ($request->has('customer_name')) {
+                $transactions->where('c.firstname', '=', "%" . $request->customer_name . "%")
+                ->where('c.lastname', '=', "%" . $request->customer_name . "%");
+            }
+            if ($request->has('msisdn')) {
+                $transactions->where('c.msisdn', '=', $request->msisdn);
+            }
+            if ($request->has('order_number')) {
+                $transactions->where('t.txn_internal_reference', '=', $request->order_number);
+            }
+            if ($request->has('txn_reference')) {
+                $transactions->where('t.txn_external_reference', '=', $request->txn_reference);
+            }
+            if ($request->has('txn_status')) {
+                $transactions->where('t.status', '=', $request->status);
+            }
+            if ($request->has('txn_channel')) {
+                $transactions->where('t.txn_cnannel', '=', $request->txn_channel);
+            }
+            $transactions->get([
+                'acc.account_name',
+                'acc.account_number',
+                'c.msisdn',
+                't.txn_internal_reference AS order_number',
+                't.txn_external_reference AS txn_reference',
+                't.txn_amount AS amount',
+                'tc.channel_name AS psp_name',
+                't.status', 't.txn_description AS description',
+                't.txn_message AS narration',
+                't.created_at AS txn_date'
+            ]);
+
+            return response()->json([
+                'status'=>'success',
+                'message'=>count($transactions)." results found!",
+                'data'=>$transactions
+            ]);
+        }catch(\Exception $err){
+            return response()->json([
+                'status'=>'error',
+                'message'=>$err->getMessage()
+            ]);
+        }
+
+    }
+
 
     public function handleCallback(Request $request)
     {
